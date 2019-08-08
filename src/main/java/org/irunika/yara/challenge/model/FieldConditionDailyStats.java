@@ -5,17 +5,21 @@ import lombok.Setter;
 
 import java.util.Date;
 
+/**
+ * Store the field stats of a given date.
+ */
 @Getter
 @Setter
-public class FieldConditionDayInfo {
+public class FieldConditionDailyStats {
 
     private final Date date;
+
     private double totalVegetation;
     private double maxVegetation;
     private double minVegetation;
     private int noOfVegetationInfoReceived;
 
-    public FieldConditionDayInfo(Date date) {
+    public FieldConditionDailyStats(Date date) {
         this.date = date;
         this.totalVegetation = 0;
         this.noOfVegetationInfoReceived = 0;

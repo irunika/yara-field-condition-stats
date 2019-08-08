@@ -19,11 +19,6 @@ public class FieldCondition {
     public FieldCondition() {
     }
 
-    public FieldCondition(double vegetation, String occurrenceAt) throws ParseException {
-        this.vegetation = vegetation;
-        this.occurrenceAt = occurrenceAt;
-    }
-
     public Date getDate() throws ParseException {
         return ISO8601_DATE_FORMAT.parse(occurrenceAt.split("T")[0]);
     }

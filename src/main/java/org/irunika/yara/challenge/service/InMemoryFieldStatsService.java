@@ -3,8 +3,10 @@ package org.irunika.yara.challenge.service;
 import org.irunika.yara.challenge.util.Constants;
 import org.irunika.yara.challenge.exception.FieldStatsServiceException;
 import org.irunika.yara.challenge.model.FieldCondition;
-import org.irunika.yara.challenge.model.FieldConditionDayInfo;
-import org.irunika.yara.challenge.dto.VegetationStatsResponse;
+import org.irunika.yara.challenge.model.FieldConditionDailyStats;
+import org.irunika.yara.challenge.model.FieldStatsSummary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -17,29 +19,33 @@ import java.util.List;
 @Component(Constants.IN_MEMORY_FIELD_STAT_SERVICE)
 public class InMemoryFieldStatsService implements FieldStatsService {
 
-    private final List<FieldConditionDayInfo> fieldConditionsDayInfos;
+    private static final Logger log = LoggerFactory.getLogger(InMemoryFieldStatsService.class);
+
+    private final List<FieldConditionDailyStats> fieldConditionDailyStats;
 
     public InMemoryFieldStatsService() {
-        this.fieldConditionsDayInfos = new ArrayList<>(30);
+        this.fieldConditionDailyStats = new ArrayList<>(Constants.INITIAL_IN_MEMORY_STATS_CAPACITY);
     }
 
     @Override
     public synchronized void saveFieldCondition(FieldCondition fieldCondition) throws FieldStatsServiceException {
         try {
-            if (!fieldConditionsDayInfos.isEmpty() && fieldConditionsDayInfos.get(fieldConditionsDayInfos.size() - 1).getDate().equals(fieldCondition.getDate())) {
-                System.out.println("Adding to existing");
-                fieldConditionsDayInfos.get(fieldConditionsDayInfos.size() - 1).addVegetation(fieldCondition.getVegetation());
+            if (!fieldConditionDailyStats.isEmpty() &&
+                    fieldConditionDailyStats.get(fieldConditionDailyStats.size() - 1).getDate().equals(fieldCondition.getDate())) {
+                FieldConditionDailyStats fieldConditionDailyStats = this.fieldConditionDailyStats.get(this.fieldConditionDailyStats.size() - 1);
+                log.debug("Adding field condition entry to existing fieldConditionDayInfo: " + fieldConditionDailyStats.getDate());
+                this.fieldConditionDailyStats.get(this.fieldConditionDailyStats.size() - 1).addVegetation(fieldCondition.getVegetation());
             } else {
-                System.out.println("Adding to new");
+                log.debug("Adding new field condition ");
                 // If every detail is saved it will space complexity will be O(N)
                 // Since maintaining a queue which only contains 30 elements.
-                if (fieldConditionsDayInfos.size() == 30) {
-                    fieldConditionsDayInfos.remove(0);
+                if (fieldConditionDailyStats.size() == Constants.INITIAL_IN_MEMORY_STATS_CAPACITY) {
+                    fieldConditionDailyStats.remove(0);
                 }
 
-                FieldConditionDayInfo conditionDayInfo = new FieldConditionDayInfo(fieldCondition.getDate());
+                FieldConditionDailyStats conditionDayInfo = new FieldConditionDailyStats(fieldCondition.getDate());
                 conditionDayInfo.addVegetation(fieldCondition.getVegetation());
-                fieldConditionsDayInfos.add(conditionDayInfo);
+                fieldConditionDailyStats.add(conditionDayInfo);
             }
         } catch (ParseException e) {
             throw new FieldStatsServiceException("Unidentified date: " + fieldCondition.getOccurrenceAt(), e);
@@ -47,25 +53,25 @@ public class InMemoryFieldStatsService implements FieldStatsService {
     }
 
     @Override
-    public List<FieldConditionDayInfo> getFieldConditionsDayInfos() {
-        return fieldConditionsDayInfos;
+    public List<FieldConditionDailyStats> getFieldConditionDailyStats() {
+        return fieldConditionDailyStats;
     }
 
     /**
-     * Since the no of elements in fieldConditionsDayInfos is maintained to 30 elements.
+     * Since the no of elements in fieldConditionDailyStats is maintained to 30 elements.
      * This method will always run for 30 only elements.
      * Time complexity of this method is constant time.
      *
      * @return VegetationStats for last 30 days.
      */
     @Override
-    public VegetationStatsResponse generateVegetationStats() {
+    public FieldStatsSummary generateVegetationStats() {
         double min = Double.MAX_VALUE;
         double max = 0;
         double totalVegetation = 0;
         int totalNoOfVegetation = 0;
-        synchronized (fieldConditionsDayInfos) {
-            for (FieldConditionDayInfo fieldConditionsDayInfo : fieldConditionsDayInfos) {
+        synchronized (fieldConditionDailyStats) {
+            for (FieldConditionDailyStats fieldConditionsDayInfo : fieldConditionDailyStats) {
                 if (min > fieldConditionsDayInfo.getMaxVegetation()) {
                     min = fieldConditionsDayInfo.getMinVegetation();
                 }
@@ -76,6 +82,6 @@ public class InMemoryFieldStatsService implements FieldStatsService {
                 totalNoOfVegetation += fieldConditionsDayInfo.getNoOfVegetationInfoReceived();
             }
         }
-        return new VegetationStatsResponse(min, max, totalVegetation / totalNoOfVegetation);
+        return new FieldStatsSummary(min, max, totalVegetation / totalNoOfVegetation);
     }
 }

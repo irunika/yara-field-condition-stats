@@ -2,7 +2,6 @@ package org.irunika.yara.challenge.controller;
 
 import org.irunika.yara.challenge.util.Constants;
 import org.irunika.yara.challenge.model.FieldCondition;
-import org.irunika.yara.challenge.model.Vegetation;
 import org.irunika.yara.challenge.service.FieldStatsService;
 import org.irunika.yara.challenge.exception.FieldStatsServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,8 @@ public class FieldStatsController {
     private FieldStatsService fieldStatsService;
 
     @RequestMapping("/hello")
-    public Vegetation sayHi() {
-        return new Vegetation(fieldStatsService.generateVegetationStats());
+    public FieldStatsResponse sayHi() {
+        return new FieldStatsResponse(fieldStatsService.generateVegetationStats());
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/hello")

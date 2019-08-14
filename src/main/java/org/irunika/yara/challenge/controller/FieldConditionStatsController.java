@@ -1,5 +1,9 @@
 package org.irunika.yara.challenge.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.irunika.yara.challenge.model.FieldConditionRequest;
 import org.irunika.yara.challenge.model.FieldStatsResponse;
@@ -18,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+@Api(value = "Field Condition Statistics Controller")
 @Slf4j
 @RestController
 public class FieldConditionStatsController {
@@ -25,11 +30,17 @@ public class FieldConditionStatsController {
     @Autowired
     private FieldConditionStatsService fieldConditionStatsService;
 
-    @RequestMapping(Constants.URI_FIELD_STATISTICS)
+    @ApiOperation(value = "Get field statics of 30 days.")
+    @RequestMapping(method = RequestMethod.GET, value = Constants.URI_FIELD_STATISTICS)
     public FieldStatsResponse getFieldStatistics() {
         return new FieldStatsResponse(fieldConditionStatsService.generateFieldStatsSummary(30));
     }
 
+    @ApiOperation(value = "Save field condition and update the daily summary of the field condition")
+    @ApiResponses({
+            @ApiResponse(code = 400, message = "Bad Request. 'vegetation' is not a number or 'occurrenceAt' is " +
+                    "not in ISO_8601 date time format.")
+    })
     @RequestMapping(method = RequestMethod.POST, value = Constants.URI_FIELD_CONDITIONS)
     @ResponseStatus(code = HttpStatus.CREATED)
     public void addFieldCondition(@RequestBody FieldConditionRequest fieldConditionRequest) {
@@ -40,7 +51,6 @@ public class FieldConditionStatsController {
     @ExceptionHandler(DateTimeParseException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public String handleDateTimeParseException(DateTimeParseException e) {
-        log.error("Could not parse the date time.", e);
-        return "Invalid date " + e.getParsedString() + ". Expecting ISO_8601 date time format for field 'occurrenceAt'";
+        return "Invalid date " + e.getParsedString() + ". Expecting ISO_8601 date time format for field 'occurrenceAt.'";
     }
 }

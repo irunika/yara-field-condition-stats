@@ -50,6 +50,20 @@ public class FieldConditionStatsService {
         fieldConditionDailySummaryRepository.save(dailySummary);
     }
 
+    /**
+     * Generates the field statistics summary for a given no of dates.
+     * eg: 30 days, year (365 days).
+     *
+     * When consuming this method, if the user always gives the same input value,
+     * <ul>
+     *     <li>this method runs in constant time</lu>
+     *     <li>this method has O(1) space complexity</lu>
+     * </ul>
+     *
+     * @param noOfDays no of dates to summarize data.
+     *
+     * @return FieldStatsSummary for a given no of dates.
+     */
     public FieldStatsSummary generateFieldStatsSummary(int noOfDays) {
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;

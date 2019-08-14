@@ -1,6 +1,5 @@
-package org.irunika.yara.challenge;
+package org.irunika.yara.challenge.controller;
 
-import org.irunika.yara.challenge.controller.FieldConditionStatsController;
 import org.irunika.yara.challenge.model.FieldStatsSummary;
 import org.irunika.yara.challenge.service.FieldConditionStatsService;
 import org.irunika.yara.challenge.util.Constants;

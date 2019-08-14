@@ -4,7 +4,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.extern.slf4j.Slf4j;
 import org.irunika.yara.challenge.model.FieldConditionRequest;
 import org.irunika.yara.challenge.model.FieldStatsResponse;
 import org.irunika.yara.challenge.service.FieldConditionStatsService;
@@ -23,14 +22,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 @Api(value = "Field Condition Statistics Controller")
-@Slf4j
 @RestController
 public class FieldConditionStatsController {
 
     @Autowired
     private FieldConditionStatsService fieldConditionStatsService;
 
-    @ApiOperation(value = "Get field statics of 30 days.")
+    @ApiOperation(value = "Get field condition statistics related to the past 30 days.")
     @RequestMapping(method = RequestMethod.GET, value = Constants.URI_FIELD_STATISTICS)
     public FieldStatsResponse getFieldStatistics() {
         return new FieldStatsResponse(fieldConditionStatsService.generateFieldStatsSummary(30));

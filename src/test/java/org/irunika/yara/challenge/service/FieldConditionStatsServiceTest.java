@@ -1,10 +1,9 @@
-package org.irunika.yara.challenge;
+package org.irunika.yara.challenge.service;
 
-import org.irunika.yara.challenge.dao.FieldConditionDailySummary;
-import org.irunika.yara.challenge.dao.FieldConditionDailySummaryRepository;
-import org.irunika.yara.challenge.dao.FieldConditionRepository;
+import org.irunika.yara.challenge.entity.FieldConditionDailySummary;
 import org.irunika.yara.challenge.model.FieldStatsSummary;
-import org.irunika.yara.challenge.service.FieldConditionStatsService;
+import org.irunika.yara.challenge.repository.FieldConditionDailySummaryRepository;
+import org.irunika.yara.challenge.repository.FieldConditionRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +48,6 @@ public class FieldConditionStatsServiceTest {
             return new FieldConditionStatsService();
         }
     }
-
 
     @Before
     public void setup() {
@@ -97,5 +95,4 @@ public class FieldConditionStatsServiceTest {
         assertEquals(0.0, fieldStatsSummary.getAvg(), 0);
         verify(fieldConditionDailySummaryRepository, Mockito.times(1)).findAllByOrderByDateDesc(PageRequest.of(0, 1));
     }
-
 }

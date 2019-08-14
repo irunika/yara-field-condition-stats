@@ -1,4 +1,4 @@
-package org.irunika.yara.challenge.dao;
+package org.irunika.yara.challenge.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

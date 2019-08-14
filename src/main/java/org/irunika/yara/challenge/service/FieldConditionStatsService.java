@@ -1,9 +1,9 @@
 package org.irunika.yara.challenge.service;
 
-import org.irunika.yara.challenge.dao.FieldCondition;
-import org.irunika.yara.challenge.dao.FieldConditionDailySummary;
-import org.irunika.yara.challenge.dao.FieldConditionDailySummaryRepository;
-import org.irunika.yara.challenge.dao.FieldConditionRepository;
+import org.irunika.yara.challenge.entity.FieldCondition;
+import org.irunika.yara.challenge.entity.FieldConditionDailySummary;
+import org.irunika.yara.challenge.repository.FieldConditionDailySummaryRepository;
+import org.irunika.yara.challenge.repository.FieldConditionRepository;
 import org.irunika.yara.challenge.model.FieldStatsSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,11 +21,17 @@ public class FieldConditionStatsService {
     private FieldConditionDailySummaryRepository fieldConditionDailySummaryRepository;
 
     @Autowired
-    private FieldConditionRepository fIeldConditionRepository;
+    private FieldConditionRepository fieldConditionRepository;
 
+    /**
+     * Create record in FieldCondition table and update the FieldConditionDailySummary table in a thread safe manner.
+     *
+     * @param vegetation vegetation
+     * @param occurrenceAt date and time which the vegetation is recorded.
+     */
     @Transactional
     public void saveFieldCondition(double vegetation, LocalDateTime occurrenceAt) {
-        fIeldConditionRepository.save(new FieldCondition(vegetation, occurrenceAt));
+        fieldConditionRepository.save(new FieldCondition(vegetation, occurrenceAt));
 
         Optional<FieldConditionDailySummary> dailySummaryOptional = fieldConditionDailySummaryRepository.findById(occurrenceAt.toLocalDate());
         FieldConditionDailySummary dailySummary;

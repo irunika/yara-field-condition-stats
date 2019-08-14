@@ -1,8 +1,6 @@
-package org.irunika.yara.challenge;
+package org.irunika.yara.challenge.repository;
 
-
-import org.irunika.yara.challenge.dao.FieldConditionDailySummary;
-import org.irunika.yara.challenge.dao.FieldConditionDailySummaryRepository;
+import org.irunika.yara.challenge.entity.FieldConditionDailySummary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class FieldConditionDailySummaryRepositoryTest {
+public class FieldConditionDailySummaryRepositoryIntegrationTest {
 
     @Autowired
     private TestEntityManager entityManager;

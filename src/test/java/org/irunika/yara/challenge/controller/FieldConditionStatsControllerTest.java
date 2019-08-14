@@ -54,7 +54,7 @@ public class FieldConditionStatsControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"vegetation\": 0.5, \"occurrenceAt\": \"2019-04-23\"}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid date 2019-04-23. Expecting ISO_8601 date time format for field 'occurrenceAt'"));
+                .andExpect(content().string("Invalid date 2019-04-23. Expecting ISO_8601 date time format for field 'occurrenceAt'."));
     }
 
     @Test

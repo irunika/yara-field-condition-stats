@@ -34,7 +34,7 @@ public class FieldConditionStatsController {
         return new FieldStatsResponse(fieldConditionStatsService.generateFieldStatsSummary(30));
     }
 
-    @ApiOperation(value = "Save field condition and update the daily summary of the field condition")
+    @ApiOperation(value = "Save field condition and update the daily summary of the field condition.")
     @ApiResponses({
             @ApiResponse(code = 400, message = "Bad Request. 'vegetation' is not a number or 'occurrenceAt' is " +
                     "not in ISO_8601 date time format.")
@@ -49,6 +49,6 @@ public class FieldConditionStatsController {
     @ExceptionHandler(DateTimeParseException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public String handleDateTimeParseException(DateTimeParseException e) {
-        return "Invalid date " + e.getParsedString() + ". Expecting ISO_8601 date time format for field 'occurrenceAt.'";
+        return "Invalid date " + e.getParsedString() + ". Expecting ISO_8601 date time format for field 'occurrenceAt'.";
     }
 }
